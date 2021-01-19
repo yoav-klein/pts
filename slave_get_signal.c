@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 int main(int argc, char** argv)
 {
@@ -26,19 +27,19 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
-	while(1)
+	memset(buffer, 0, 50);
+	read_bytes = read(fd, buffer, 50);
+	printf("Read bytes: %d\n", read_bytes);
+	if(-1 == read_bytes)
 	{
-		memset(buffer, 0, 50);
-		read_bytes = read(fd, buffer, 50);
-		printf("Read bytes: %d\n", read_bytes);
-		if(-1 == read_bytes)
-		{
-			perror("read");
-			
-			return 1;
-		}
-		printf("%s\n", buffer);
+		printf("errno: %d\n", errno);
+		perror("read");
+		
+		return 1;
 	}
+	
+	printf("%s\n", buffer);
+	printf("read byte: %d\n", buffer[0]);
 	
 	return 0;
 }

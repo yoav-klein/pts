@@ -7,7 +7,7 @@
 *
 *
 *
-**********************************8/
+**********************************/
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,6 +39,7 @@ int read_from_tty(char *tty)
 		{
 			perror("read");
 		}
+		printf("Bytes read: %d\n", bytes_read);
 		if(-1 == write(1, buffer, bytes_read))
 		{
 			perror("write:");
