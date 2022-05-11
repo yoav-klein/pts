@@ -65,7 +65,6 @@ int main(int argc, char** argv)
 	}
 
 	printf("sid: %d\n", sid);
-	perror("sid");
 	while(1)
 	{
 		memset(buffer, 0, sizeof(buffer));
