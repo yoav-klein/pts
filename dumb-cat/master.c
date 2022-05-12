@@ -103,9 +103,10 @@ int talk_to_application(int epoll_fd, int master_fd)
 	int nfds = 0;
 	int read_bytes = 0, written_bytes = 0;
 	int i = 0;
+	int stop = 0;
 	char buffer[BUFFSIZE];
 
-	while(1)
+	while(!stop)
 	{	
 		nfds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
 		if(-1 == nfds)
@@ -134,17 +135,24 @@ int talk_to_application(int epoll_fd, int master_fd)
 			}
 			if(master_fd == events[i].data.fd) /* application */
 			{
-				read_bytes = read(master_fd, buffer, sizeof(buffer));
-				if(-1 == read_bytes)
+				if(events[i].events & EPOLLHUP)
 				{
-					perror("read from application");
-					return -1;
+					stop = 1;
 				}
-				written_bytes = write(1, buffer, read_bytes);
-				if(-1 == written_bytes)
+				if(events[i].events & EPOLLIN)
 				{
-					perror("write to stdout");
-					return -1;
+					read_bytes = read(master_fd, buffer, sizeof(buffer));
+					if(-1 == read_bytes)
+					{
+						perror("read from application");
+						return -1;
+					}
+					written_bytes = write(1, buffer, read_bytes);
+					if(-1 == written_bytes)
+					{
+						perror("write to stdout");
+						return -1;
+					}
 				}
 				
 			}
