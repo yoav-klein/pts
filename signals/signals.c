@@ -39,7 +39,7 @@ int main() {
         exit(1);
     }
 
-	if(-1 == sigaction(SIGINT, &sa, NULL))
+	if(-1 == sigaction(SIGTERM, &sa, NULL))
 	{
 		perror("sigaction");
 		return -1;
